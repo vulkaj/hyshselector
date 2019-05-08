@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
+import android.graphics.Color;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -14,10 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.example.hyshselector.R;
-import com.example.hyshselector.entities.Picture;
+import com.example.hyshselector.entities.PhotoHysh;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.File;
 import java.util.List;
@@ -29,10 +29,10 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
 
 
     private Context context;
-    private List<Picture> listString;
+    private List<PhotoHysh> listString;
     private ClickInImage clickInImage;
 
-    public AdapterPhotos(Context context, List<Picture> listString, ClickInImage clickInImage) {
+    public AdapterPhotos(Context context, List<PhotoHysh> listString, ClickInImage clickInImage) {
         this.context = context;
         this.listString = listString;
         this.clickInImage = clickInImage;
@@ -47,37 +47,41 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
-        /*
-        Glide.with(context)
-                .load("http://mouse.latercera.com/wp-content/uploads/2017/03/ren-stimpy-1.jpg")
-                .into(holder.imagePicture);
-        */
 
 
-
-        final Picture picture = listString.get(position);
+        final PhotoHysh photoHysh = listString.get(position);
         String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/Sesion01/";
         File f = new File(path, listString.get(position).getName());
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(), bmOptions);
-        holder.imagePicture.setImageBitmap(bitmap);
+
+        bmOptions.inSampleSize = 12;
+        final Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(), bmOptions);
+        holder.roundedPicture.setImageBitmap(bitmap);
+
 
         holder.relativePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickInImage.clickOnPicture(picture,position);
+                clickInImage.clickOnPicture(photoHysh, position, bitmap);
+            }
+        });
 
+        holder.relativePicture.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                clickInImage.longClickOnPicture(photoHysh, position);
+                return true;
             }
         });
 
 
         //TODO hacer que la imagen seleccionada se quede marcada
-        if(!listString.get(position).isSelected()){
-            holder.imageIconAdd.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.colorPrimary)));
+        if (!listString.get(position).isSelected()) {
+            holder.roundedPicture.setBorderColor(Color.TRANSPARENT);
         } else {
-            holder.imageIconAdd.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.colorAccent)));
+            holder.roundedPicture.setBorderColor(ContextCompat.getColor(context, R.color.hyshPink));
         }
-
 
 
     }
@@ -88,10 +92,8 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.image_picture)
-        ImageView imagePicture;
-        @BindView(R.id.image_icon_add)
-        ImageView imageIconAdd;
+        @BindView(R.id.rounded_picture)
+        RoundedImageView roundedPicture;
         @BindView(R.id.relative_picture)
         RelativeLayout relativePicture;
 
@@ -102,7 +104,9 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
         }
     }
 
-    public interface ClickInImage{
-        void clickOnPicture(Picture picture, int position);
+    public interface ClickInImage {
+        void clickOnPicture(PhotoHysh photoHysh, int position, Bitmap bitmap);
+
+        void longClickOnPicture(PhotoHysh photoHysh, int position);
     }
 }

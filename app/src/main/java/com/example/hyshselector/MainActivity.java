@@ -1,15 +1,21 @@
 package com.example.hyshselector;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.hyshselector.adapters.AdapterPhotos;
-import com.example.hyshselector.entities.Picture;
+import com.example.hyshselector.entities.PhotoHysh;
+import com.example.hyshselector.fragments.ViewImageExtended;
 import com.example.hyshselector.utils.Constants;
 
 import java.io.File;
@@ -25,11 +31,19 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerPictures;
     @BindView(R.id.text_directories)
     TextView textDirectories;
+    @BindView(R.id.navigationView)
+    NavigationView navigationView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private Context context;
-    private List<Picture> listString;
+    private List<PhotoHysh> listString;
     private AdapterPhotos adapterPhotos;
     private Constants constants;
+    private ViewImageExtended viewImageExtended;
+    private PhotoHysh pic;
 
 
     @Override
@@ -37,6 +51,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
 
         context = this;
         listString = new ArrayList<>();
@@ -49,21 +76,27 @@ public class MainActivity extends AppCompatActivity {
     private void gettingDirectoriesNames() {
 
 
-        String path = Environment.getExternalStorageDirectory().toString() + "/"+"HyshSelections/Sesion01";
+        String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/Sesion01";
         //String path = Environment.getExternalStorageDirectory().toString();
         StringBuilder stringBuilder = new StringBuilder();
         File directory = new File(path);
         File[] files = directory.listFiles();
 
-        for (int i = 0; i < files.length; i++) {
+        try {
+            for (int i = 0; i < files.length; i++) {
 
 
-            if(!files[i].getName().contains(".CR2")){
-                Picture picture = new Picture();
-                picture.setName(files[i].getName());
-                listString.add(picture);
-                stringBuilder.append(files[i].getName()+" ");
+                if (!files[i].getName().contains(".CR2")) {
+                    PhotoHysh photoHysh = new PhotoHysh();
+                    photoHysh.setName(files[i].getName());
+                    photoHysh.setId(i);
+                    listString.add(photoHysh);
+                    stringBuilder.append(files[i].getName() + " ");
+                }
+
             }
+
+        } catch (Exception e) {
 
         }
 
@@ -73,13 +106,39 @@ public class MainActivity extends AppCompatActivity {
     private void settingRecycler() {
         adapterPhotos = new AdapterPhotos(context, listString, new AdapterPhotos.ClickInImage() {
             @Override
-            public void clickOnPicture(Picture picture, int position) {
-                if(picture.isSelected()==true){
-                    picture.setSelected(false);
-                } else {
-                    picture.setSelected(true);
+            public void clickOnPicture(PhotoHysh photoHysh, int position, Bitmap bitmap) {
+
+
+                if (viewImageExtended == null || viewImageExtended.getDialog() == null || !viewImageExtended.getDialog().isShowing()) {
+
+
+                    pic = listString.get(position);
+                    FragmentManager fm = getSupportFragmentManager();
+
+                    Bundle arguments = new Bundle();
+
+                    // Aqui le pasas el bitmap de la imagen
+                    arguments.putParcelable("bitmap", bitmap);
+                    arguments.putParcelable("info", pic);
+                    viewImageExtended = ViewImageExtended.newInstance(arguments);
+                    viewImageExtended.show(fm, "ViewImageExtended");
+
                 }
-                //adapterPhotos.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void longClickOnPicture(PhotoHysh photoHysh, int position) {
+
+                pic = listString.get(position);
+                if (pic.isSelected()) {
+                    pic.setSelected(false);
+                } else {
+                    pic.setSelected(true);
+
+                }
+
+                adapterPhotos.notifyDataSetChanged();
 
             }
         });
