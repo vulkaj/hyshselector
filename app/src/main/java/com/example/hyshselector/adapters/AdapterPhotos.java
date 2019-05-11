@@ -52,19 +52,23 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
 
 
         final PhotoHysh photoHysh = listString.get(position);
-        String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/"+sessionName;
-        File f = new File(path, listString.get(position).getName());
+        String thumbnailPath = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/Thumbnails/" + sessionName;
+        String path = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/" + sessionName;
+        File f = new File(thumbnailPath, listString.get(position).getName());
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-
-        bmOptions.inSampleSize = 12;
-        final Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(), bmOptions);
+        //TODO crear Thumbnails mas pequeñas pero que la imagen al seleccionarla se vea a tamaño guay
+        bmOptions.inSampleSize = 2;
+        final Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
         holder.roundedPicture.setImageBitmap(bitmap);
+
+        File realFile = new File(path, listString.get(position).getName());
+        final Bitmap realBitmap = BitmapFactory.decodeFile(realFile.getAbsolutePath(), bmOptions);
 
 
         holder.relativePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickInImage.clickOnPicture(photoHysh, position, bitmap);
+                clickInImage.clickOnPicture(photoHysh, position, realBitmap);
             }
         });
 

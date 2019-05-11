@@ -10,7 +10,8 @@
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/rounded_picture"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         app:riv_border_color="@color/hyshPink"
         app:riv_border_width="6dp"

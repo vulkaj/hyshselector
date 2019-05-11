@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         listString = new ArrayList<>();
 
         settingRecycler();
-        gettingDirectoriesNames();
+        gettingFiles();
         navigationViewSelector();
 
     }
@@ -113,14 +113,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void gettingDirectoriesNames() {
+    private void gettingFiles() {
 
 
-        String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/" + sessionName;
+        String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/Thumbnails/" + sessionName;
         //String path = Environment.getExternalStorageDirectory().toString();
         StringBuilder stringBuilder = new StringBuilder();
         File directory = new File(path);
         File[] files = directory.listFiles();
+
+
 
         try {
             for (int i = 0; i < files.length; i++) {
@@ -156,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     FragmentManager fm = getSupportFragmentManager();
 
                     Bundle arguments = new Bundle();
+
 
                     // Aqui le pasas el bitmap de la imagen
                     arguments.putParcelable("bitmap", bitmap);
