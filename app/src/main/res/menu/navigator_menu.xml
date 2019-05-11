@@ -11,8 +11,4 @@
             android:title="Todas las fotos" />
     </group>
 
-    <item
-        android:id="@+id/nav_info_selected"
-        android:title="Todas las fotos" />
-
 </menu>

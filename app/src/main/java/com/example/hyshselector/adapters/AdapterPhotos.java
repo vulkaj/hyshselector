@@ -31,10 +31,12 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
     private Context context;
     private List<PhotoHysh> listString;
     private ClickInImage clickInImage;
+    private String sessionName;
 
-    public AdapterPhotos(Context context, List<PhotoHysh> listString, ClickInImage clickInImage) {
+    public AdapterPhotos(Context context, List<PhotoHysh> listString, String sessionName, ClickInImage clickInImage) {
         this.context = context;
         this.listString = listString;
+        this.sessionName = sessionName;
         this.clickInImage = clickInImage;
     }
 
@@ -50,7 +52,7 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
 
 
         final PhotoHysh photoHysh = listString.get(position);
-        String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/Sesion01/";
+        String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/"+sessionName;
         File f = new File(path, listString.get(position).getName());
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
 
