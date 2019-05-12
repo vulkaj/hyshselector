@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -29,12 +30,19 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.hyshselector.utils.Constants.BASE_DIRECTORY;
+import static com.example.hyshselector.utils.Constants.PRICE_10;
+import static com.example.hyshselector.utils.Constants.PRICE_20;
+import static com.example.hyshselector.utils.Constants.PRICE_5;
+import static com.example.hyshselector.utils.Constants.SESSION_NAME;
+import static com.example.hyshselector.utils.Constants.TAG_BITMAP;
+import static com.example.hyshselector.utils.Constants.TAG_INFO;
+import static com.example.hyshselector.utils.Constants.THUMBNAILS_DIRECTORY;
+
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.recycler_pictures)
     RecyclerView recyclerPictures;
-    @BindView(R.id.text_directories)
-    TextView textDirectories;
     @BindView(R.id.navigationView)
     NavigationView navigationView;
     @BindView(R.id.drawer_layout)
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Context context;
     private List<PhotoHysh> listString;
+    private List<PhotoHysh> listOriginal;
     private AdapterPhotos adapterPhotos;
     private Constants constants;
     private ViewImageExtended viewImageExtended;
@@ -54,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private int extraPhotos;
     private int amount;
     private String sessionName;
+    private String path;
 
 
     @Override
@@ -65,14 +75,24 @@ public class MainActivity extends AppCompatActivity {
         settingToolbar();
 
         Intent intent = getIntent();
-        sessionName = intent.getStringExtra("session_name");
+        sessionName = intent.getStringExtra(SESSION_NAME);
 
         context = this;
         listString = new ArrayList<>();
+        listOriginal = new ArrayList<>();
 
+        //TODO poner una barra de progreso para cuando esté creando las thumbnails
+        /*
+        progressBar = new ProgressBar(youractivity.this,null,android.R.attr.progressBarStyleLarge);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        layout.addView(progressBar,params);
+        progressBar.setVisibility(View.VISIBLE);  //To show ProgressBar
+        */
         settingRecycler();
         gettingFiles();
         navigationViewSelector();
+
 
     }
 
@@ -85,17 +105,39 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.nav_all_photos:
-                        Toast.makeText(context, "all pics", Toast.LENGTH_SHORT).show();
+
+                        listString.clear();
+                        listString.addAll(listOriginal);
+                        adapterPhotos.notifyDataSetChanged();
+                        drawerLayout.closeDrawer(Gravity.LEFT);
+
                         break;
                     case R.id.nav_checked:
-                        Toast.makeText(context, "only selected", Toast.LENGTH_SHORT).show();
-                        break;
+                        returnOnlySelected();
+                        drawerLayout.closeDrawer(Gravity.LEFT);
 
+                        break;
 
                 }
                 return true;
             }
         });
+
+    }
+
+    private void returnOnlySelected() {
+        listString.clear();
+        for (int i = 0; i < listOriginal.size(); i++) {
+            if (listOriginal.get(i).isSelected()) {
+                PhotoHysh photoHysh = new PhotoHysh();
+                photoHysh.setName(listOriginal.get(i).getName());
+                photoHysh.setId(listOriginal.get(i).getId());
+                listString.add(photoHysh);
+
+            }
+        }
+
+        adapterPhotos.notifyDataSetChanged();
 
     }
 
@@ -116,24 +158,22 @@ public class MainActivity extends AppCompatActivity {
     private void gettingFiles() {
 
 
-        String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/Thumbnails/" + sessionName;
-        //String path = Environment.getExternalStorageDirectory().toString();
-        StringBuilder stringBuilder = new StringBuilder();
+        path = Environment.getExternalStorageDirectory().toString() + "/" + BASE_DIRECTORY + "/" + THUMBNAILS_DIRECTORY + "/" + sessionName;
         File directory = new File(path);
         File[] files = directory.listFiles();
-
+        listString.clear();
+        listOriginal.clear();
 
 
         try {
             for (int i = 0; i < files.length; i++) {
-
-
                 if (files[i].getName().contains(".jpg")) {
                     PhotoHysh photoHysh = new PhotoHysh();
                     photoHysh.setName(files[i].getName());
                     photoHysh.setId(i);
                     listString.add(photoHysh);
-                    stringBuilder.append(files[i].getName() + " ");
+
+
                 }
 
             }
@@ -141,12 +181,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
 
         }
+        listOriginal.addAll(listString);
         listString.size();
-        textDirectories.setText(stringBuilder.toString());
+
     }
 
     private void settingRecycler() {
-        adapterPhotos = new AdapterPhotos(context, listString,sessionName, new AdapterPhotos.ClickInImage() {
+        adapterPhotos = new AdapterPhotos(context, listString, sessionName, new AdapterPhotos.ClickInImage() {
             @Override
             public void clickOnPicture(PhotoHysh photoHysh, int position, Bitmap bitmap) {
 
@@ -161,8 +202,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                     // Aqui le pasas el bitmap de la imagen
-                    arguments.putParcelable("bitmap", bitmap);
-                    arguments.putParcelable("info", pic);
+                    arguments.putParcelable(TAG_BITMAP, bitmap);
+                    arguments.putParcelable(TAG_INFO, pic);
                     viewImageExtended = ViewImageExtended.newInstance(arguments);
                     viewImageExtended.show(fm, "ViewImageExtended");
 
@@ -179,9 +220,8 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     pic.setSelected(true);
                 }
-
                 updatingTotal();
-                adapterPhotos.notifyDataSetChanged();
+                adapterPhotos.notifyItemChanged(position);
 
             }
         });
@@ -198,26 +238,25 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < listString.size(); i++) {
             if (listString.get(i).isSelected()) {
                 totalSelected++;
-
             }
-        }
-
-
-        if (totalSelected <= 4) {
-            message = String.valueOf(totalSelected);
         }
 
         //TODO poner bien lo de los precios
         if (totalSelected >= 5 && totalSelected <= 9) {
-            message = totalSelected + " " + "Pack de 5 = 60 €";
+            message = totalSelected + " " + PRICE_5;
         } else if (totalSelected >= 10 && totalSelected <= 19) {
-            message = totalSelected + " " + "Pack de 10 = 90 €";
+            message = totalSelected + " " + PRICE_10;
         } else if (totalSelected == 20) {
-            message = totalSelected + " " + "Pack de 20 = 150 €";
+            message = totalSelected + " " + PRICE_20;
         } else {
             extraPhotos = totalSelected - 20;
             amount = extraPhotos * 6;
+            amount = amount + 120;
             message = totalSelected + " " + "Pack de 20 + " + extraPhotos + " fotos extra = " + amount;
+        }
+
+        if (totalSelected <= 4) {
+            message = String.valueOf(totalSelected);
         }
 
 

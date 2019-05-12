@@ -21,14 +21,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.example.hyshselector.utils.Constants.TAG_BITMAP;
+import static com.example.hyshselector.utils.Constants.TAG_INFO;
+
 public class ViewImageExtended extends AppCompatDialogFragment {
 
     public Bitmap bitmap;
     public Bundle bundle;
     private PhotoHysh photoHysh;
     private Context context;
-
-    TextView texting;
 
 
     public static ViewImageExtended newInstance(Bundle arguments) {
@@ -39,7 +40,6 @@ public class ViewImageExtended extends AppCompatDialogFragment {
     }
 
     public ViewImageExtended() {
-        // Required empty public constructor
     }
 
     @Override
@@ -68,9 +68,8 @@ public class ViewImageExtended extends AppCompatDialogFragment {
 
         //Glide.with(this).load("http://3.bp.blogspot.com/-uct5OX4Npe0/Vp3dqhe97uI/AAAAAAAABP8/Ij1na2vZb_M/s1600/jasdhjas.jpg").into(picture);
 
-        photoHysh = bundle.getParcelable("info");
-
-        bitmap = bundle.getParcelable("bitmap");
+        photoHysh = bundle.getParcelable(TAG_INFO);
+        bitmap = bundle.getParcelable(TAG_BITMAP);
 
 
         if (bitmap != null) {

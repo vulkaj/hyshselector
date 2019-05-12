@@ -32,6 +32,10 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
     private List<PhotoHysh> listString;
     private ClickInImage clickInImage;
     private String sessionName;
+    private Bitmap realBitmap;
+    private String thumbnailPath;
+    private String path;
+    private File realFile;
 
     public AdapterPhotos(Context context, List<PhotoHysh> listString, String sessionName, ClickInImage clickInImage) {
         this.context = context;
@@ -44,6 +48,8 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_photo, viewGroup, false);
+        thumbnailPath = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/Thumbnails/" + sessionName;
+        path = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/" + sessionName;
         return new MyViewHolder(v);
     }
 
@@ -52,22 +58,31 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
 
 
         final PhotoHysh photoHysh = listString.get(position);
-        String thumbnailPath = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/Thumbnails/" + sessionName;
-        String path = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/" + sessionName;
         File f = new File(thumbnailPath, listString.get(position).getName());
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        //TODO crear Thumbnails mas pequeñas pero que la imagen al seleccionarla se vea a tamaño guay
-        bmOptions.inSampleSize = 2;
         final Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+
+
         holder.roundedPicture.setImageBitmap(bitmap);
 
-        File realFile = new File(path, listString.get(position).getName());
-        final Bitmap realBitmap = BitmapFactory.decodeFile(realFile.getAbsolutePath(), bmOptions);
+
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inSampleSize = 2;
+        realFile = new File(path, listString.get(position).getName());
+        realBitmap = BitmapFactory.decodeFile(realFile.getAbsolutePath(), bmOptions);
+
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+        String imageType = options.outMimeType;
 
 
         holder.relativePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                decodeBitmap();
                 clickInImage.clickOnPicture(photoHysh, position, realBitmap);
             }
         });
@@ -82,12 +97,16 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
         });
 
 
-        //TODO hacer que la imagen seleccionada se quede marcada
         if (!listString.get(position).isSelected()) {
             holder.roundedPicture.setBorderColor(Color.TRANSPARENT);
         } else {
             holder.roundedPicture.setBorderColor(ContextCompat.getColor(context, R.color.hyshPink));
         }
+
+
+    }
+
+    private void decodeBitmap() {
 
 
     }

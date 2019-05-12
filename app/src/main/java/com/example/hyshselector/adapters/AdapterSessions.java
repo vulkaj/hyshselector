@@ -1,5 +1,7 @@
 package com.example.hyshselector.adapters;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -57,6 +59,8 @@ public class AdapterSessions extends RecyclerView.Adapter<AdapterSessions.MyView
                 sessionName = listString.get(position);
 
                 creatingThumbNails();
+
+
                 //TODO crear un loader dialog que no deje avanzar para que de tiempo al programa a crear las thumbnails para cargarlas después
                 Intent intent = new Intent(context, MainActivity.class);
                 intent.putExtra("session_name", listString.get(position));
@@ -89,12 +93,17 @@ public class AdapterSessions extends RecyclerView.Adapter<AdapterSessions.MyView
         File fileDirectoryThumbnails = new File(pathThumbnails);
         File[] files = directory.listFiles();
 
+
         if (!fileDirectoryThumbnails.exists()) {
             try {
+
+
                 for (int i = 0; i < files.length; i++) {
 
                     if (files[i].getName().contains(".jpg")) {
 
+
+                        //TODO creo que al hacer toda la mandanga del bitmap la cosa hace que el scroll vaya regular. Mirar esto.
                         BitmapFactory.Options scaleOptions = new BitmapFactory.Options();
                         scaleOptions.inJustDecodeBounds = true;
                         BitmapFactory.decodeFile(path, scaleOptions);

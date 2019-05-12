@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.hyshselector.adapters.AdapterSessions;
 import com.example.hyshselector.entities.PhotoHysh;
@@ -20,6 +22,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.hyshselector.utils.Constants.BASE_DIRECTORY;
+
 public class SessionSelector extends AppCompatActivity {
 
     @BindView(R.id.recycler)
@@ -30,7 +34,6 @@ public class SessionSelector extends AppCompatActivity {
     private File[] arrayDirectories;
     private List<String> listString;
     private AdapterSessions adapterSessions;
-    private String sessionName;
 
 
     @Override
@@ -38,7 +41,6 @@ public class SessionSelector extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session_selector);
         ButterKnife.bind(this);
-
 
         context = this;
 
@@ -50,9 +52,7 @@ public class SessionSelector extends AppCompatActivity {
     private void gettingListOfSessions() {
 
         listString = new ArrayList<>();
-
-        path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections";
-
+        path = Environment.getExternalStorageDirectory().toString() + "/" + BASE_DIRECTORY;
         directory = new File(path);
         arrayDirectories = directory.listFiles();
 
@@ -73,10 +73,10 @@ public class SessionSelector extends AppCompatActivity {
     }
 
 
-
-
     private void settingAdapter() {
-
+        recycler.setHasFixedSize(true);
+        recycler.setItemViewCacheSize(20);
+        recycler.setDrawingCacheEnabled(true);
         adapterSessions = new AdapterSessions(context, listString);
         recycler.setAdapter(adapterSessions);
 
