@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
                     photoHysh.setId(i);
                     listString.add(photoHysh);
 
-
                 }
 
             }
@@ -204,6 +203,13 @@ public class MainActivity extends AppCompatActivity {
                     // Aqui le pasas el bitmap de la imagen
                     arguments.putParcelable(TAG_BITMAP, bitmap);
                     arguments.putParcelable(TAG_INFO, pic);
+                    arguments.putInt("position", position);
+                    arguments.putString("session_name",sessionName);
+
+                    ArrayList<PhotoHysh> passingArrayList = new ArrayList<>();
+                    passingArrayList.addAll(listString);
+
+                    arguments.putParcelableArrayList("list_images", passingArrayList);
                     viewImageExtended = ViewImageExtended.newInstance(arguments);
                     viewImageExtended.show(fm, "ViewImageExtended");
 
@@ -264,6 +270,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
 }

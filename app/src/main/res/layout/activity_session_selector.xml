@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/hyshGray"
+    android:padding="70dp"
     tools:context=".SessionSelector">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Seleccionar sesión"
+        android:textColor="@color/hyshPink"
         android:textSize="30dp"
         android:textStyle="bold" />
 

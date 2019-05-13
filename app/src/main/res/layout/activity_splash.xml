@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/hyshGray"
     tools:context=".SplashActivity">
 
     <ImageView
@@ -12,7 +13,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_margin="100dp"
-        android:src="@drawable/ic_hyshlogo"
+        android:src="@drawable/ic_hyshrosa"
         android:tint="@color/hyshPink" />
 
 </RelativeLayout>

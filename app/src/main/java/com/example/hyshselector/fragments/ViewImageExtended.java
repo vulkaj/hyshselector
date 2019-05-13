@@ -3,7 +3,9 @@ package com.example.hyshselector.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -13,9 +15,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hyshselector.R;
 import com.example.hyshselector.entities.PhotoHysh;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +36,14 @@ public class ViewImageExtended extends AppCompatDialogFragment {
     public Bundle bundle;
     private PhotoHysh photoHysh;
     private Context context;
+    private ImageView picture;
+    private ImageView imageNext;
+    private ImageView imagePrevious;
+    private ImageView imageSelection;
+    private ArrayList<PhotoHysh> listImages;
+    private String sessionName;
+    private int position;
+    private String path;
 
 
     public static ViewImageExtended newInstance(Bundle arguments) {
@@ -49,7 +63,6 @@ public class ViewImageExtended extends AppCompatDialogFragment {
         context = getActivity();
         bundle = getArguments();
 
-
         // Esta linea de código hace que tu DialogFragment sea Full screen
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_NoTitleBar);
 
@@ -62,31 +75,101 @@ public class ViewImageExtended extends AppCompatDialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_fragment_view_image, container, false);
 
-        ImageView picture = (ImageView) view.findViewById(R.id.ivImage);
-        ImageView imageSelection = (ImageView) view.findViewById(R.id.image_icon_add);
+        picture = (ImageView) view.findViewById(R.id.ivImage);
+        imageNext = (ImageView) view.findViewById(R.id.image_next);
+        imagePrevious = (ImageView) view.findViewById(R.id.image_previous);
+        imageSelection = (ImageView) view.findViewById(R.id.image_icon_add);
+
+        listeners();
 
 
         //Glide.with(this).load("http://3.bp.blogspot.com/-uct5OX4Npe0/Vp3dqhe97uI/AAAAAAAABP8/Ij1na2vZb_M/s1600/jasdhjas.jpg").into(picture);
 
-        photoHysh = bundle.getParcelable(TAG_INFO);
+        listImages = bundle.getParcelableArrayList("list_images");
+        photoHysh = bundle.getParcelable(TAG_INFO); //objeto PhotoHysh
         bitmap = bundle.getParcelable(TAG_BITMAP);
+        sessionName = bundle.getString("session_name");
+        position = bundle.getInt("position");
+        path = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/" + sessionName;
+
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inSampleSize = 2;
+        File realFile = new File(path, listImages.get(position).getName());
+        Bitmap realBitmap = BitmapFactory.decodeFile(realFile.getAbsolutePath(), bmOptions);
 
 
         if (bitmap != null) {
-            picture.setImageBitmap(bitmap);
+            picture.setImageBitmap(realBitmap);
         }
 
 
-        if (photoHysh.isSelected()) {
-            imageSelection.setColorFilter(ContextCompat.getColor(context, R.color.hyshPink));
-        } else {
-            imageSelection.setColorFilter(ContextCompat.getColor(context, R.color.colorBlack));
-        }
+        isSelected();
 
 
         return view;
     }
 
+    private void isSelected() {
+        if (photoHysh.isSelected()) {
+            imageSelection.setColorFilter(ContextCompat.getColor(context, R.color.hyshPink));
+        } else {
+            imageSelection.setColorFilter(ContextCompat.getColor(context, R.color.colorBlack));
+        }
+    }
+
+    private void listeners() {
+        imageNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getNextOrPreviousPicture(true);
+            }
+        });
+
+        imagePrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getNextOrPreviousPicture(false);
+            }
+        });
+
+        imageSelection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listImages.get(position).isSelected()) {
+                    listImages.get(position).setSelected(false);
+                } else {
+                    listImages.get(position).setSelected(true);
+                }
+                isSelected();
+            }
+        });
+    }
+
+    private void getNextOrPreviousPicture(boolean isNext) {
+
+        if (isNext) {
+            if (position < listImages.size() - 1) {
+                position = position + 1;
+            }
+
+        } else {
+            if (position > 0) {
+                position = position - 1;
+            }
+
+        }
+
+        selectPicture();
+    }
+
+    private void selectPicture() {
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inSampleSize = 2;
+        File realFile = new File(path, listImages.get(position).getName());
+        Bitmap realBitmap = BitmapFactory.decodeFile(realFile.getAbsolutePath(), bmOptions);
+
+        picture.setImageBitmap(realBitmap);
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
