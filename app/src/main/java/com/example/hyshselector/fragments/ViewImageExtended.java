@@ -38,7 +38,6 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
 
     public Bitmap bitmap;
     public Bundle bundle;
-    private PhotoHysh photoHysh;
     private Context context;
     private ImageView picture;
     private ImageView imageNext;
@@ -50,7 +49,14 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
     private String sessionName;
     private int position;
     private String path;
-    private GettingDataFromDialog gettingDataFromDialog;
+
+    public ArrayList<PhotoHysh> getListImages() {
+        return listImages;
+    }
+
+    public void setListImages(ArrayList<PhotoHysh> listImages) {
+        this.listImages = listImages;
+    }
 
     public boolean isImageSelected() {
         return listImages.get(position).isSelected();
@@ -113,7 +119,7 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
         //Glide.with(this).load("http://3.bp.blogspot.com/-uct5OX4Npe0/Vp3dqhe97uI/AAAAAAAABP8/Ij1na2vZb_M/s1600/jasdhjas.jpg").into(picture);
 
         listImages = bundle.getParcelableArrayList("list_images");
-        photoHysh = bundle.getParcelable(TAG_INFO); //objeto PhotoHysh
+
         bitmap = bundle.getParcelable(TAG_BITMAP);
         sessionName = bundle.getString("session_name");
         position = bundle.getInt("position");
@@ -137,7 +143,7 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
     }
 
     private void isSelected() {
-        if (photoHysh.isSelected()) {
+        if (listImages.get(position).isSelected()) {
             imageSelection.setColorFilter(ContextCompat.getColor(context, R.color.hyshPink));
         } else {
             imageSelection.setColorFilter(ContextCompat.getColor(context, R.color.colorBlack));
@@ -184,15 +190,17 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
         if (isNext) {
             if (position < listImages.size() - 1) {
                 position = position + 1;
+
             }
 
         } else {
             if (position > 0) {
                 position = position - 1;
+
             }
 
         }
-
+        isSelected();
         selectPicture();
     }
 
@@ -200,6 +208,7 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inSampleSize = 2;
         File realFile = new File(path, listImages.get(position).getName());
+
         Bitmap realBitmap = BitmapFactory.decodeFile(realFile.getAbsolutePath(), bmOptions);
 
         picture.setImageBitmap(realBitmap);
@@ -226,9 +235,7 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
         }
     }
 
-    public interface GettingDataFromDialog{
-        void getActualicedList(List<PhotoHysh> list);
-    }
+
 
     @Override
     public void onDestroyView() {

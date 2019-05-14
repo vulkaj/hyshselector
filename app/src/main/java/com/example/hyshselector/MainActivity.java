@@ -284,6 +284,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         toast.show();
 
         listString.get(viewImageExtended.getPosition()).setSelected(viewImageExtended.isImageSelected());
-        adapterPhotos.notifyItemChanged(viewImageExtended.getPosition());
+        listString.clear();
+        listString.addAll(viewImageExtended.getListImages());
+        adapterPhotos.notifyDataSetChanged();
     }
 }
