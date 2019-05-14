@@ -1,5 +1,7 @@
 package com.example.hyshselector;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -150,11 +152,48 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                finishSelection();
             }
         });
 
     }
+
+    private void finishSelection() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+
+        // set title
+        alertDialogBuilder.setTitle("TERMINAR SELECCIÓN");
+
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("¿Lo tienes claro ya? ¿Seguro que has terminado la selección?")
+                .setCancelable(false)
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        Intent intent = new Intent(context, ResumeOfSelection.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
 
     private void gettingFiles() {
 
@@ -238,8 +277,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
     }
 
-
-    //TODO usar el método getter del objeto para ver si se lo puedo asignar al objeto creado para recuperar si es favorito o no con position y el isselected de Photohysh
     private void updatingTotal() {
         extraPhotos = 0;
         totalSelected = 0;
