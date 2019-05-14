@@ -1,6 +1,7 @@
 package com.example.hyshselector;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ import static com.example.hyshselector.utils.Constants.TAG_BITMAP;
 import static com.example.hyshselector.utils.Constants.TAG_INFO;
 import static com.example.hyshselector.utils.Constants.THUMBNAILS_DIRECTORY;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
 
     @BindView(R.id.recycler_pictures)
     RecyclerView recyclerPictures;
@@ -204,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                     arguments.putParcelable(TAG_BITMAP, bitmap);
                     arguments.putParcelable(TAG_INFO, pic);
                     arguments.putInt("position", position);
-                    arguments.putString("session_name",sessionName);
+                    arguments.putString("session_name", sessionName);
 
                     ArrayList<PhotoHysh> passingArrayList = new ArrayList<>();
                     passingArrayList.addAll(listString);
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+
 
             @Override
             public void longClickOnPicture(PhotoHysh photoHysh, int position) {
@@ -236,6 +238,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    //TODO usar el método getter del objeto para ver si se lo puedo asignar al objeto creado para recuperar si es favorito o no con position y el isselected de Photohysh
     private void updatingTotal() {
         extraPhotos = 0;
         totalSelected = 0;
@@ -246,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
                 totalSelected++;
             }
         }
+
 
         //TODO poner bien lo de los precios
         if (totalSelected >= 5 && totalSelected <= 9) {
@@ -272,6 +277,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
 
+        Toast toast = Toast.makeText(context, String.valueOf(viewImageExtended.getPosition()), Toast.LENGTH_LONG);
+        toast.show();
 
+        listString.get(viewImageExtended.getPosition()).setSelected(viewImageExtended.isImageSelected());
+        adapterPhotos.notifyItemChanged(viewImageExtended.getPosition());
+    }
 }
