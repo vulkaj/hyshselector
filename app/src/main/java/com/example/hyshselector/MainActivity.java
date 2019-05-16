@@ -2,6 +2,7 @@ package com.example.hyshselector;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     private String path;
 
 
+    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         ButterKnife.bind(this);
 
         settingToolbar();
+
 
         Intent intent = getIntent();
         sessionName = intent.getStringExtra(SESSION_NAME);
@@ -98,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
 
     }
+
+
 
     private void navigationViewSelector() {
 
@@ -324,5 +331,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         listString.clear();
         listString.addAll(viewImageExtended.getListImages());
         adapterPhotos.notifyDataSetChanged();
+
+        updatingTotal();
     }
 }

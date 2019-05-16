@@ -49,6 +49,8 @@ public class SessionSelector extends AppCompatActivity {
     }
 
 
+
+
     private void gettingListOfSessions() {
 
         listString = new ArrayList<>();
