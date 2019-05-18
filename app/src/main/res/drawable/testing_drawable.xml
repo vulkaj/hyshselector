@@ -5,6 +5,6 @@
     <corners android:bottomRightRadius="75dp" android:topRightRadius="75dp" />
 
     <gradient
-        android:endColor="@color/hyshGray"
+        android:endColor="@android:color/transparent"
         android:startColor="@color/hyshPink" />
 </shape>

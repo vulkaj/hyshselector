@@ -1,21 +1,18 @@
 package com.example.hyshselector;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.example.hyshselector.adapters.AdapterSessions;
-import com.example.hyshselector.entities.PhotoHysh;
+import com.example.hyshselector.adapters.TutorialActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +25,9 @@ public class SessionSelector extends AppCompatActivity {
 
     @BindView(R.id.recycler)
     RecyclerView recycler;
+    @BindView(R.id.imageToTutorial)
+    ImageView imageToTutorial;
+
     private Context context;
     private String path;
     private File directory;
@@ -46,9 +46,18 @@ public class SessionSelector extends AppCompatActivity {
 
         gettingListOfSessions();
         settingAdapter();
+        listeners();
     }
 
-
+    private void listeners() {
+        imageToTutorial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, TutorialActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
 
 
     private void gettingListOfSessions() {

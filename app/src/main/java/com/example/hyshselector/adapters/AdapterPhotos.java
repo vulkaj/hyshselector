@@ -36,6 +36,9 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
     private String thumbnailPath;
     private String path;
     private File realFile;
+    private PhotoHysh photoHysh;
+    private BitmapFactory.Options bmOptions;
+    private BitmapFactory.Options options;
 
     public AdapterPhotos(Context context, List<PhotoHysh> listString, String sessionName, ClickInImage clickInImage) {
         this.context = context;
@@ -50,6 +53,12 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_photo, viewGroup, false);
         thumbnailPath = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/Thumbnails/" + sessionName;
         path = Environment.getExternalStorageDirectory().toString() + "/HyshSelections/" + sessionName;
+        bmOptions = new BitmapFactory.Options();
+        bmOptions.inSampleSize = 2;
+        options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+
         return new MyViewHolder(v);
     }
 
@@ -57,7 +66,7 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
 
-        final PhotoHysh photoHysh = listString.get(position);
+        photoHysh = listString.get(position);
         File f = new File(thumbnailPath, listString.get(position).getName());
         final Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
 
@@ -65,24 +74,13 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
         holder.roundedPicture.setImageBitmap(bitmap);
 
 
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inSampleSize = 2;
         realFile = new File(path, listString.get(position).getName());
         realBitmap = BitmapFactory.decodeFile(realFile.getAbsolutePath(), bmOptions);
-
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-        int imageHeight = options.outHeight;
-        int imageWidth = options.outWidth;
-        String imageType = options.outMimeType;
 
 
         holder.relativePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                decodeBitmap();
                 clickInImage.clickOnPicture(photoHysh, position, realBitmap);
             }
         });
@@ -106,10 +104,6 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
 
     }
 
-    private void decodeBitmap() {
-
-
-    }
 
     @Override
     public int getItemCount() {
@@ -131,7 +125,6 @@ public class AdapterPhotos extends RecyclerView.Adapter<AdapterPhotos.MyViewHold
 
     public interface ClickInImage {
         void clickOnPicture(PhotoHysh photoHysh, int position, Bitmap bitmap);
-
         void longClickOnPicture(PhotoHysh photoHysh, int position);
     }
 }

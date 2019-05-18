@@ -16,10 +16,15 @@
         android:screenOrientation="landscape"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ResumeOfSelection"></activity>
+        <activity android:name=".adapters.TutorialActivity">
+
+
+
+        </activity>
+        <activity android:name=".ResumeOfSelection" />
         <activity
             android:name=".SessionSelector"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="landscape">

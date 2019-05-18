@@ -14,7 +14,9 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -233,6 +235,11 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     }
 
     private void settingRecycler() {
+
+        //NEW
+        SnapHelper helper = new LinearSnapHelper();
+        helper.attachToRecyclerView(recyclerPictures);
+
         adapterPhotos = new AdapterPhotos(context, listString, sessionName, new AdapterPhotos.ClickInImage() {
             @Override
             public void clickOnPicture(PhotoHysh photoHysh, int position, Bitmap bitmap) {
@@ -298,6 +305,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         //TODO poner bien lo de los precios
         if (totalSelected >= 5 && totalSelected <= 9) {
+            extraPhotos = totalSelected - 5;
+            amount = extraPhotos * 6;
+            amount = amount + 120;
             message = totalSelected + " " + PRICE_5;
         } else if (totalSelected >= 10 && totalSelected <= 19) {
             message = totalSelected + " " + PRICE_10;
