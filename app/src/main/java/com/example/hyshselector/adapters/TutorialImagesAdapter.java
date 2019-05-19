@@ -49,11 +49,8 @@ public class TutorialImagesAdapter extends PagerAdapter {
         ImageView imageView = new ImageView(context);
         Drawable drawable = listTutorial.get(position);
         imageView.setImageDrawable(drawable);
-
         holder.addView(imageView);
-
         return imageView;
-
     }
 
     @Override

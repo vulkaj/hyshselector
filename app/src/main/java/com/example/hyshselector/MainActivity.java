@@ -1,8 +1,6 @@
 package com.example.hyshselector;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,11 +12,8 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +37,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.hyshselector.utils.Constants.AMOUNT_EXTRA_PHOTO;
+import static com.example.hyshselector.utils.Constants.AMOUNT_FIVE;
+import static com.example.hyshselector.utils.Constants.AMOUNT_TEN;
+import static com.example.hyshselector.utils.Constants.AMOUNT_TWENTY;
 import static com.example.hyshselector.utils.Constants.BASE_DIRECTORY;
+import static com.example.hyshselector.utils.Constants.LIST_IMAGES;
+import static com.example.hyshselector.utils.Constants.POSITION;
 import static com.example.hyshselector.utils.Constants.PRICE_10;
 import static com.example.hyshselector.utils.Constants.PRICE_20;
 import static com.example.hyshselector.utils.Constants.PRICE_5;
@@ -68,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     private List<PhotoHysh> listString;
     private List<PhotoHysh> listOriginal;
     private AdapterPhotos adapterPhotos;
-    private Constants constants;
     private ViewImageExtended viewImageExtended;
     private PhotoHysh pic;
     private int totalSelected;
@@ -94,14 +94,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         listString = new ArrayList<>();
         listOriginal = new ArrayList<>();
 
-        //TODO poner una barra de progreso para cuando esté creando las thumbnails
-        /*
-        progressBar = new ProgressBar(youractivity.this,null,android.R.attr.progressBarStyleLarge);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        layout.addView(progressBar,params);
-        progressBar.setVisibility(View.VISIBLE);  //To show ProgressBar
-        */
         gettingFiles();
         settingRecycler();
         navigationViewSelector();
@@ -174,15 +166,12 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
 
-        // set title
-        alertDialogBuilder.setTitle("TERMINAR SELECCIÓN");
+        alertDialogBuilder.setTitle(getString(R.string.finish_selection));
 
-
-        // set dialog message
         alertDialogBuilder
-                .setMessage("¿Lo tienes claro ya? ¿Seguro que has terminado la selección?")
+                .setMessage(getString(R.string.r_u_sure))
                 .setCancelable(false)
-                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         copyRawFilesToDirectory();
                         Intent intent = new Intent(context, ResumeOfSelection.class);
@@ -190,18 +179,13 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                         startActivity(intent);
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
                         dialog.cancel();
                     }
                 });
 
-        // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
         alertDialog.show();
     }
 
@@ -306,15 +290,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         recyclerPictures.setItemViewCacheSize(listOriginal.size());
         recyclerPictures.setHasFixedSize(true);
-
-        //TEST
-        /*
-        for (int childCount = recyclerPictures.getChildCount(), i = 0; i < childCount; ++i) {
-            final RecyclerView.ViewHolder holder = recyclerPictures.getChildViewHolder(recyclerPictures.getChildAt(i));
-
-        }
-*/
-
         adapterPhotos = new AdapterPhotos(context, listString, sessionName, new AdapterPhotos.ClickInImage() {
             @Override
             public void clickOnPicture(PhotoHysh photoHysh, int position, Bitmap bitmap) {
@@ -329,21 +304,19 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                     Bundle arguments = new Bundle();
 
 
-                    // Aqui le pasas el bitmap de la imagen
                     arguments.putParcelable(TAG_BITMAP, bitmap);
                     arguments.putParcelable(TAG_INFO, pic);
-                    arguments.putInt("position", position);
-                    arguments.putString("session_name", sessionName);
+                    arguments.putInt(POSITION, position);
+                    arguments.putString(SESSION_NAME, sessionName);
 
                     ArrayList<PhotoHysh> passingArrayList = new ArrayList<>();
                     passingArrayList.addAll(listString);
 
-                    arguments.putParcelableArrayList("list_images", passingArrayList);
+                    arguments.putParcelableArrayList(LIST_IMAGES, passingArrayList);
                     viewImageExtended = ViewImageExtended.newInstance(arguments);
                     viewImageExtended.show(fm, "ViewImageExtended");
 
                 }
-
             }
 
 
@@ -358,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 }
                 updatingTotal();
                 adapterPhotos.notifyItemChanged(position);
-
             }
         });
         recyclerPictures.setAdapter(adapterPhotos);
@@ -378,23 +350,22 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         }
 
 
-        //TODO poner bien lo de los precios
         if (totalSelected >= 5 && totalSelected <= 9) {
             extraPhotos = totalSelected - 5;
-            amount = extraPhotos * 6;
-            amount = amount + 60; //TODO make Constants with the price of each session
+            amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
+            amount = amount + AMOUNT_FIVE; //TODO make Constants with the price of each session
             message = totalSelected + " " + PRICE_5;
         } else if (totalSelected >= 10 && totalSelected <= 19) {
             extraPhotos = totalSelected - 10;
-            amount = extraPhotos * 6;
-            amount = amount + 90;
+            amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
+            amount = amount + AMOUNT_TEN;
             message = totalSelected + " " + PRICE_10;
         } else if (totalSelected == 20) {
             message = totalSelected + " " + PRICE_20;
         } else {
             extraPhotos = totalSelected - 20;
-            amount = extraPhotos * 6;
-            amount = amount + 120;
+            amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
+            amount = amount + AMOUNT_TWENTY;
             message = totalSelected + " " + "Pack de 20 + " + extraPhotos + " fotos extra = " + amount;
         }
 

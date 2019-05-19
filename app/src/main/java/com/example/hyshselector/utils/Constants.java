@@ -8,8 +8,15 @@ public class Constants {
     public static String SESSION_NAME = "session_name";
     public static String TAG_BITMAP = "bitmap";
     public static String TAG_INFO = "info";
+    public static String POSITION = "position";
+    public static String LIST_IMAGES = "list_images";
 
     public static String PRICE_5 = "Pack de 5 = 60 €";
     public static String PRICE_10 = "Pack de 10 = 90 €";
     public static String PRICE_20 = "Pack de 20 = 150 €";
+
+    public static int AMOUNT_FIVE = 60;
+    public static int AMOUNT_TEN = 90;
+    public static int AMOUNT_TWENTY = 150;
+    public static int AMOUNT_EXTRA_PHOTO = 6;
 }

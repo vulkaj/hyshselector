@@ -17,24 +17,16 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.hyshselector.R;
 import com.example.hyshselector.entities.PhotoHysh;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.example.hyshselector.utils.Constants.TAG_BITMAP;
-import static com.example.hyshselector.utils.Constants.TAG_INFO;
 
-public class ViewImageExtended extends AppCompatDialogFragment  {
+public class ViewImageExtended extends AppCompatDialogFragment {
 
     public Bitmap bitmap;
     public Bundle bundle;
@@ -50,31 +42,6 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
     private int position;
     private String path;
 
-    public ArrayList<PhotoHysh> getListImages() {
-        return listImages;
-    }
-
-    public void setListImages(ArrayList<PhotoHysh> listImages) {
-        this.listImages = listImages;
-    }
-
-    public boolean isImageSelected() {
-        return listImages.get(position).isSelected();
-    }
-
-    public void setImageSelected(boolean imageSelected) {
-        isImageSelected = imageSelected;
-    }
-
-    private boolean isImageSelected;
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
 
     public static ViewImageExtended newInstance(Bundle arguments) {
         Bundle args = arguments;
@@ -93,9 +60,7 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
         context = getActivity();
         bundle = getArguments();
 
-        // Esta linea de código hace que tu DialogFragment sea Full screen
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_NoTitleBar);
-
 
     }
 
@@ -115,8 +80,6 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
 
         listeners();
 
-
-        //Glide.with(this).load("http://3.bp.blogspot.com/-uct5OX4Npe0/Vp3dqhe97uI/AAAAAAAABP8/Ij1na2vZb_M/s1600/jasdhjas.jpg").into(picture);
 
         listImages = bundle.getParcelableArrayList("list_images");
 
@@ -190,16 +153,14 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
         if (isNext) {
             if (position < listImages.size() - 1) {
                 position = position + 1;
-
             }
 
         } else {
             if (position > 0) {
                 position = position - 1;
-
             }
-
         }
+
         isSelected();
         selectPicture();
     }
@@ -208,9 +169,7 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inSampleSize = 2;
         File realFile = new File(path, listImages.get(position).getName());
-
         Bitmap realBitmap = BitmapFactory.decodeFile(realFile.getAbsolutePath(), bmOptions);
-
         picture.setImageBitmap(realBitmap);
     }
 
@@ -236,9 +195,34 @@ public class ViewImageExtended extends AppCompatDialogFragment  {
     }
 
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    public ArrayList<PhotoHysh> getListImages() {
+        return listImages;
+    }
+
+    public void setListImages(ArrayList<PhotoHysh> listImages) {
+        this.listImages = listImages;
+    }
+
+    public boolean isImageSelected() {
+        return listImages.get(position).isSelected();
+    }
+
+    public void setImageSelected(boolean imageSelected) {
+        isImageSelected = imageSelected;
+    }
+
+    private boolean isImageSelected;
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

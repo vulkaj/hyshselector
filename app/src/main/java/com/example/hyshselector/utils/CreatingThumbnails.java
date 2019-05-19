@@ -11,11 +11,14 @@ import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.example.hyshselector.MainActivity;
+import com.example.hyshselector.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+
+import static com.example.hyshselector.utils.Constants.SESSION_NAME;
 
 public class CreatingThumbnails extends AsyncTask<Void, Void, Void> {
     private ProgressDialog mProgressDialog;
@@ -56,13 +59,12 @@ public class CreatingThumbnails extends AsyncTask<Void, Void, Void> {
                         scaleOptions.inJustDecodeBounds = true;
                         BitmapFactory.decodeFile(path, scaleOptions);
                         int scale = 1;
-                        while (scaleOptions.outWidth / scale / 2 >= 250 //ancho
-                                && scaleOptions.outHeight / scale / 2 >= 167) { //alto
+                        while (scaleOptions.outWidth / scale / 2 >= 250
+                                && scaleOptions.outHeight / scale / 2 >= 167) {
                             scale *= 2;
                         }
 
 
-                        // decode with the sample size
                         BitmapFactory.Options outOptions = new BitmapFactory.Options();
                         outOptions.inSampleSize = scale;
 
@@ -73,7 +75,7 @@ public class CreatingThumbnails extends AsyncTask<Void, Void, Void> {
                         float scaleWidth = ((float) 250) / width;
                         float scaleHeight = ((float) 167) / height;
 
-                        File compressed = new File(pathThumbnails + "/" + files[i].getName()); //TODO comprobar si le tengo que poner extensión o no
+                        File compressed = new File(pathThumbnails + "/" + files[i].getName());
 
                         File f = new File(pathThumbnails);
                         if (!f.exists()) {
@@ -81,22 +83,14 @@ public class CreatingThumbnails extends AsyncTask<Void, Void, Void> {
                         }
 
                         Matrix matrix = new Matrix();
-                        // RESIZE THE BIT MAP
                         matrix.postScale(scaleWidth, scaleHeight);
-
-                        // "RECREATE" THE NEW BITMAP
                         Bitmap resizedBitmap = Bitmap.createBitmap(
                                 bitmap, 0, 0, width, height, matrix, false);
 
-                        //convert the decoded bitmap to stream
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
                         resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
 
-                    /*
-                    Right now, we have our bitmap inside byteArrayOutputStream Object, all we need next is to write it to the compressed file we created earlier,
-                    java.io.FileOutputStream can help us do just That!
-                     */
                         FileOutputStream fileOutputStream = new FileOutputStream(compressed);
                         fileOutputStream.write(byteArrayOutputStream.toByteArray());
                         fileOutputStream.flush();
@@ -104,16 +98,10 @@ public class CreatingThumbnails extends AsyncTask<Void, Void, Void> {
                         fileOutputStream.close();
 
                     }
-
                 }
-
             } catch (Exception e) {
-
             }
-
         }
-
-
         return null;
     }
 
@@ -121,7 +109,7 @@ public class CreatingThumbnails extends AsyncTask<Void, Void, Void> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        mProgressDialog = ProgressDialog.show(context, "Cargando", "Por favor, espere...");
+        mProgressDialog = ProgressDialog.show(context, context.getString(R.string.loading), context.getString(R.string.please_wait));
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.setCancelable(true);
         mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -145,7 +133,7 @@ public class CreatingThumbnails extends AsyncTask<Void, Void, Void> {
         }
 
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("session_name", listString.get(position));
+        intent.putExtra(SESSION_NAME, listString.get(position));
         context.startActivity(intent);
 
 

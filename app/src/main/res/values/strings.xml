@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">HyshSelector</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="loading">Cargando</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="please_wait">Por favor, espere...</string>
+    <string name="finish_selection">TERMINAR SELECCIÓN</string>
+    <string name="r_u_sure">¿Lo tienes claro ya? ¿Seguro que has terminado la selección?</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
 </resources>

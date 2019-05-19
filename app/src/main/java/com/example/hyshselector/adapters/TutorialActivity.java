@@ -26,9 +26,6 @@ public class TutorialActivity extends AppCompatActivity {
     @BindView(R.id.imageBack)
     ImageView imageBack;
 
-    //@BindView(R.id.circle_indicator)
-    //me.relex.circleindicator.CircleIndicator circleIndicator;
-    //TODO Circluindicator???
     private List<String> stringList;
     private List<Drawable> listDrawable;
     private Context context;
@@ -41,7 +38,7 @@ public class TutorialActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tutorial);
         ButterKnife.bind(this);
         context = this;
-        listDrawable = new ArrayList<Drawable>();
+        listDrawable = new ArrayList<>();
 
 
         fillImageSwipeTutorial();
