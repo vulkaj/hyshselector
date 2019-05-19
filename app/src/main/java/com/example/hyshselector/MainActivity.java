@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         layout.addView(progressBar,params);
         progressBar.setVisibility(View.VISIBLE);  //To show ProgressBar
         */
-        settingRecycler();
         gettingFiles();
+        settingRecycler();
         navigationViewSelector();
 
 
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 for (int r = 0; r < listString.size(); r++) {
                     String getName = listString.get(r).getName();
                     getName = getName.substring(0, getName.length() - 4);
-                    
+
                     if (listString.get(r).isSelected()) {
 
 
@@ -235,11 +235,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                             File fileOrigin = new File(pathOrigin + "/" + j);
                             File fileDestiny = new File(pathDirectorySelection + "/" + j);
 
-                            //File fileOrigin = new File(pathOrigin + s);
-                            //File fileDestiny = new File(pathDirectorySelection + s);
 
                             try {
-                                copyFiles(fileOrigin, fileDestiny); //TODO falta el "is Selected"
+                                copyFiles(fileOrigin, fileDestiny);
                             } catch (Exception y) {
 
                                 y.printStackTrace();
@@ -304,6 +302,11 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     }
 
     private void settingRecycler() {
+
+        recyclerPictures.setItemViewCacheSize(listOriginal.size());
+        recyclerPictures.setHasFixedSize(true);
+
+
 
         adapterPhotos = new AdapterPhotos(context, listString, sessionName, new AdapterPhotos.ClickInImage() {
             @Override

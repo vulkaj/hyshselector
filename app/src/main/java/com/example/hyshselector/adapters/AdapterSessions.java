@@ -102,8 +102,6 @@ public class AdapterSessions extends RecyclerView.Adapter<AdapterSessions.MyView
 
                     if (files[i].getName().contains(".jpg")) {
 
-
-                        //TODO creo que al hacer toda la mandanga del bitmap la cosa hace que el scroll vaya regular. Mirar esto.
                         BitmapFactory.Options scaleOptions = new BitmapFactory.Options();
                         scaleOptions.inJustDecodeBounds = true;
                         BitmapFactory.decodeFile(path, scaleOptions);
