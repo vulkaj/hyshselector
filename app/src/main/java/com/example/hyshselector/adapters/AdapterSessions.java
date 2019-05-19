@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import com.example.hyshselector.MainActivity;
 import com.example.hyshselector.R;
 import com.example.hyshselector.SessionSelector;
+import com.example.hyshselector.utils.CreatingThumbnails;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -56,15 +60,29 @@ public class AdapterSessions extends RecyclerView.Adapter<AdapterSessions.MyView
             @Override
             public void onClick(View v) {
 
+
+                holder.textSelection.setTextColor(ContextCompat.getColor(context, R.color.hyshPink));
+                new CountDownTimer(500, 50) {
+
+                    @Override
+                    public void onTick(long arg0) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        holder.textSelection.setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                    }
+                }.start();
+
+
                 sessionName = listString.get(position);
 
-                creatingThumbNails();
+                CreatingThumbnails creatingThumbnails = new CreatingThumbnails(context, sessionName, position, listString);
+                creatingThumbnails.execute();
 
 
-                //TODO crear un loader dialog que no deje avanzar para que de tiempo al programa a crear las thumbnails para cargarlas después
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra("session_name", listString.get(position));
-                context.startActivity(intent);
             }
         });
     }
@@ -85,83 +103,9 @@ public class AdapterSessions extends RecyclerView.Adapter<AdapterSessions.MyView
         }
     }
 
-    private void creatingThumbNails() {
 
-        String path = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/" + sessionName;
-        String pathThumbnails = Environment.getExternalStorageDirectory().toString() + "/" + "HyshSelections/Thumbnails/" + sessionName;
-        File directory = new File(path);
-        File fileDirectoryThumbnails = new File(pathThumbnails);
-        File[] files = directory.listFiles();
-
-
-        if (!fileDirectoryThumbnails.exists()) {
-            try {
-
-
-                for (int i = 0; i < files.length; i++) {
-
-                    if (files[i].getName().contains(".jpg")) {
-
-                        BitmapFactory.Options scaleOptions = new BitmapFactory.Options();
-                        scaleOptions.inJustDecodeBounds = true;
-                        BitmapFactory.decodeFile(path, scaleOptions);
-                        int scale = 1;
-                        while (scaleOptions.outWidth / scale / 2 >= 250 //ancho
-                                && scaleOptions.outHeight / scale / 2 >= 167) { //alto
-                            scale *= 2;
-                        }
-
-
-                        // decode with the sample size
-                        BitmapFactory.Options outOptions = new BitmapFactory.Options();
-                        outOptions.inSampleSize = scale;
-
-
-                        Bitmap bitmap = BitmapFactory.decodeFile(path + "/" + files[i].getName(), outOptions);
-                        int width = bitmap.getWidth();
-                        int height = bitmap.getHeight();
-                        float scaleWidth = ((float) 250) / width;
-                        float scaleHeight = ((float) 167) / height;
-
-                        File compressed = new File(pathThumbnails + "/" + files[i].getName()); //TODO comprobar si le tengo que poner extensión o no
-
-                        File f = new File(pathThumbnails);
-                        if (!f.exists()) {
-                            f.mkdirs();
-                        }
-
-                        Matrix matrix = new Matrix();
-                        // RESIZE THE BIT MAP
-                        matrix.postScale(scaleWidth, scaleHeight);
-
-                        // "RECREATE" THE NEW BITMAP
-                        Bitmap resizedBitmap = Bitmap.createBitmap(
-                                bitmap, 0, 0, width, height, matrix, false);
-
-                        //convert the decoded bitmap to stream
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-                        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
-
-                    /*
-                    Right now, we have our bitmap inside byteArrayOutputStream Object, all we need next is to write it to the compressed file we created earlier,
-                    java.io.FileOutputStream can help us do just That!
-                     */
-                        FileOutputStream fileOutputStream = new FileOutputStream(compressed);
-                        fileOutputStream.write(byteArrayOutputStream.toByteArray());
-                        fileOutputStream.flush();
-
-                        fileOutputStream.close();
-
-                    }
-
-                }
-
-            } catch (Exception e) {
-
-            }
-
-        }
+    private void intentToGallery(int position) {
+        //TODO crear un loader dialog que no deje avanzar para que de tiempo al programa a crear las thumbnails para cargarlas después
 
 
     }

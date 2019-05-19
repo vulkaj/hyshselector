@@ -19,9 +19,10 @@
         <activity android:name=".adapters.TutorialActivity">
 
 
-
         </activity>
-        <activity android:name=".ResumeOfSelection" />
+        <activity
+            android:name=".ResumeOfSelection"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".SessionSelector"
             android:screenOrientation="landscape" />

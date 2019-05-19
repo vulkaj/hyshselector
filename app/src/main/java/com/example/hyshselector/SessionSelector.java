@@ -92,4 +92,10 @@ public class SessionSelector extends AppCompatActivity {
         recycler.setAdapter(adapterSessions);
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 }

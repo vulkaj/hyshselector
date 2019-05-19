@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                     public void onClick(DialogInterface dialog, int id) {
                         copyRawFilesToDirectory();
                         Intent intent = new Intent(context, ResumeOfSelection.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
                 })
@@ -306,7 +307,13 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         recyclerPictures.setItemViewCacheSize(listOriginal.size());
         recyclerPictures.setHasFixedSize(true);
 
+        //TEST
+        /*
+        for (int childCount = recyclerPictures.getChildCount(), i = 0; i < childCount; ++i) {
+            final RecyclerView.ViewHolder holder = recyclerPictures.getChildViewHolder(recyclerPictures.getChildAt(i));
 
+        }
+*/
 
         adapterPhotos = new AdapterPhotos(context, listString, sessionName, new AdapterPhotos.ClickInImage() {
             @Override
