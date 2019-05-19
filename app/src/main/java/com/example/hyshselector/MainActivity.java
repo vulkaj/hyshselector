@@ -211,19 +211,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         File f = new File(pathOrigin);
         File newPath = new File(pathDirectorySelection);
-/* TEST WORKS PERFECTLY!!
-        try {
-            File fileOrigin = new File(pathOrigin + "/_F2G6096.CR2");
-            File fileDestiny = new File(pathDirectorySelection + "/_F2G6096.CR2");
-
-
-            copyFiles(fileOrigin, fileDestiny); //TODO falta el "is Selected"
-
-
-        } catch (Exception e) {
-
-        }
-*/
 
 
         if (!newPath.exists()) {
@@ -233,20 +220,38 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         for (int i = 0; i < files.length; i++) {
 
             String j = files[i].getName();
-
+            String getFileName = files[i].getName();
+            getFileName = getFileName.substring(0, getFileName.length() - 4);
             if (j.contains(".CR2")) {
-                File fileOrigin = new File(pathOrigin + "/" + j);
-                File fileDestiny = new File(pathDirectorySelection + "/" + j);
+                for (int r = 0; r < listString.size(); r++) {
+                    String getName = listString.get(r).getName();
+                    getName = getName.substring(0, getName.length() - 4);
+                    
+                    if (listString.get(r).isSelected()) {
 
-                //File fileOrigin = new File(pathOrigin + s);
-                //File fileDestiny = new File(pathDirectorySelection + s);
 
-                try {
-                    copyFiles(fileOrigin, fileDestiny); //TODO falta el "is Selected"
-                } catch (Exception y) {
-                    System.out.println("BOQUEPACHA");
-                    y.printStackTrace();
+                        if (getFileName.equals(getName)) {
+
+                            File fileOrigin = new File(pathOrigin + "/" + j);
+                            File fileDestiny = new File(pathDirectorySelection + "/" + j);
+
+                            //File fileOrigin = new File(pathOrigin + s);
+                            //File fileDestiny = new File(pathDirectorySelection + s);
+
+                            try {
+                                copyFiles(fileOrigin, fileDestiny); //TODO falta el "is Selected"
+                            } catch (Exception y) {
+
+                                y.printStackTrace();
+                            }
+
+                        }
+
+
+                    }
+
                 }
+
 
             }
         }
