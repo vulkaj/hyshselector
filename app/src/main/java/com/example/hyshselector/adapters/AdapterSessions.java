@@ -108,8 +108,8 @@ public class AdapterSessions extends RecyclerView.Adapter<AdapterSessions.MyView
                         scaleOptions.inJustDecodeBounds = true;
                         BitmapFactory.decodeFile(path, scaleOptions);
                         int scale = 1;
-                        while (scaleOptions.outWidth / scale / 2 >= 500 //ancho
-                                && scaleOptions.outHeight / scale / 2 >= 333) { //alto
+                        while (scaleOptions.outWidth / scale / 2 >= 250 //ancho
+                                && scaleOptions.outHeight / scale / 2 >= 167) { //alto
                             scale *= 2;
                         }
 
@@ -122,8 +122,8 @@ public class AdapterSessions extends RecyclerView.Adapter<AdapterSessions.MyView
                         Bitmap bitmap = BitmapFactory.decodeFile(path + "/" + files[i].getName(), outOptions);
                         int width = bitmap.getWidth();
                         int height = bitmap.getHeight();
-                        float scaleWidth = ((float) 500) / width;
-                        float scaleHeight = ((float) 333) / height;
+                        float scaleWidth = ((float) 250) / width;
+                        float scaleHeight = ((float) 167) / height;
 
                         File compressed = new File(pathThumbnails + "/" + files[i].getName()); //TODO comprobar si le tengo que poner extensión o no
 

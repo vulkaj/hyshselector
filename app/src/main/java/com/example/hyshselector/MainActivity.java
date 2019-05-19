@@ -31,6 +31,11 @@ import com.example.hyshselector.fragments.ViewImageExtended;
 import com.example.hyshselector.utils.Constants;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     private String path;
 
 
-    
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
 
     }
-
 
 
     private void navigationViewSelector() {
@@ -182,8 +184,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 .setCancelable(false)
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, close
-                        // current activity
+                        copyRawFilesToDirectory();
                         Intent intent = new Intent(context, ResumeOfSelection.class);
                         startActivity(intent);
                     }
@@ -201,6 +202,69 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         // show it
         alertDialog.show();
+    }
+
+    private void copyRawFilesToDirectory() {
+        String pathBase = Environment.getExternalStorageDirectory().toString() + "/" + BASE_DIRECTORY;
+        String pathOrigin = pathBase + "/" + sessionName;
+        String pathDirectorySelection = pathOrigin + "/selection";
+
+        File f = new File(pathOrigin);
+        File newPath = new File(pathDirectorySelection);
+/* TEST WORKS PERFECTLY!!
+        try {
+            File fileOrigin = new File(pathOrigin + "/_F2G6096.CR2");
+            File fileDestiny = new File(pathDirectorySelection + "/_F2G6096.CR2");
+
+
+            copyFiles(fileOrigin, fileDestiny); //TODO falta el "is Selected"
+
+
+        } catch (Exception e) {
+
+        }
+*/
+
+
+        if (!newPath.exists()) {
+            newPath.mkdirs();
+        }
+        File[] files = f.listFiles();
+        for (int i = 0; i < files.length; i++) {
+
+            String j = files[i].getName();
+
+            if (j.contains(".CR2")) {
+                File fileOrigin = new File(pathOrigin + "/" + j);
+                File fileDestiny = new File(pathDirectorySelection + "/" + j);
+
+                //File fileOrigin = new File(pathOrigin + s);
+                //File fileDestiny = new File(pathDirectorySelection + s);
+
+                try {
+                    copyFiles(fileOrigin, fileDestiny); //TODO falta el "is Selected"
+                } catch (Exception y) {
+                    System.out.println("BOQUEPACHA");
+                    y.printStackTrace();
+                }
+
+            }
+        }
+
+
+    }
+
+    public static void copyFiles(File src, File dst) throws IOException {
+        try (InputStream in = new FileInputStream(src)) {
+            try (OutputStream out = new FileOutputStream(dst)) {
+                // Transfer bytes from in to out
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+            }
+        }
     }
 
 
@@ -235,10 +299,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     }
 
     private void settingRecycler() {
-
-        //NEW
-        SnapHelper helper = new LinearSnapHelper();
-        helper.attachToRecyclerView(recyclerPictures);
 
         adapterPhotos = new AdapterPhotos(context, listString, sessionName, new AdapterPhotos.ClickInImage() {
             @Override
@@ -307,9 +367,12 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         if (totalSelected >= 5 && totalSelected <= 9) {
             extraPhotos = totalSelected - 5;
             amount = extraPhotos * 6;
-            amount = amount + 120;
+            amount = amount + 60; //TODO make Constants with the price of each session
             message = totalSelected + " " + PRICE_5;
         } else if (totalSelected >= 10 && totalSelected <= 19) {
+            extraPhotos = totalSelected - 10;
+            amount = extraPhotos * 6;
+            amount = amount + 90;
             message = totalSelected + " " + PRICE_10;
         } else if (totalSelected == 20) {
             message = totalSelected + " " + PRICE_20;
