@@ -2,19 +2,84 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear_brief"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:background="@color/hyshGray"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context=".ResumeOfSelection">
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:text="Nombre de la sesión"
+        android:textColor="@color/hyshPink"
+        android:textSize="60sp" />
+
+    <TextView
+        android:id="@+id/text_wich_pack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="DATOS DE LA SELECCION\nPrecio Final\nInfo que se quiera meter"
+        android:text="total fotos elegidas"
         android:textColor="@color/hyshPink"
-        android:textSize="60sp" />
+        android:textSize="35sp" />
+
+    <TextView
+        android:id="@+id/text_total_sel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="total fotos elegidas"
+        android:textColor="@color/hyshPink"
+        android:textSize="35sp" />
+
+    <TextView
+        android:id="@+id/text_total_extra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="total fotos elegidas"
+        android:textColor="@color/hyshPink"
+        android:textSize="35sp"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/text_final_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="total fotos elegidas"
+        android:textColor="@color/hyshPink"
+        android:textSize="35sp" />
+
+    <TextView
+        android:id="@+id/text_final_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:text="@string/final_message"
+        android:textColor="@color/hyshPink"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_hyshrosa" />
 
 </LinearLayout>

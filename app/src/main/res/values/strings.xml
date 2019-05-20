@@ -7,4 +7,11 @@
     <string name="r_u_sure">¿Lo tienes claro ya? ¿Seguro que has terminado la selección?</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
+    <string name="total_chosen">Total de fotos elegidas: </string>
+    <string name="final_price">Precio final: </string>
+    <string name="total_extra">Fotos extra: </string>
+    <string name="up_to_five">Debes seleccionar al menos 5 fotografías</string>
+    <string name="final_message">Muchas gracias por seleccionar tus fotografías deseadas\n
+                                    Notifícanos que ya has terminado y en breve ultimaremos los detalles\n
+                                    Esperamos que hayas disfrutado rememorando aquel gran día</string>
 </resources>

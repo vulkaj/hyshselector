@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     private int amount;
     private String sessionName;
     private String path;
+    private int pack;
 
 
     @Override
@@ -155,7 +156,12 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishSelection();
+                if (pack == 1 || pack == 2 || pack == 3) {
+                    finishSelection();
+                } else {
+                    Toast.makeText(context, getString(R.string.up_to_five), Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -175,6 +181,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                     public void onClick(DialogInterface dialog, int id) {
                         copyRawFilesToDirectory();
                         Intent intent = new Intent(context, ResumeOfSelection.class);
+                        intent.putExtra(SESSION_NAME, sessionName);
+                        intent.putExtra("total_selected", totalSelected);
+                        intent.putExtra("amount", amount);
+                        intent.putExtra("pack", pack);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
@@ -342,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         extraPhotos = 0;
         totalSelected = 0;
         amount = 0;
+        pack = 0;
         String message = " ";
         for (int i = 0; i < listString.size(); i++) {
             if (listString.get(i).isSelected()) {
@@ -354,11 +365,13 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             extraPhotos = totalSelected - 5;
             amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
             amount = amount + AMOUNT_FIVE; //TODO make Constants with the price of each session
+            pack = 1;
             message = totalSelected + " " + PRICE_5;
         } else if (totalSelected >= 10 && totalSelected <= 19) {
             extraPhotos = totalSelected - 10;
             amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
             amount = amount + AMOUNT_TEN;
+            pack = 2;
             message = totalSelected + " " + PRICE_10;
         } else if (totalSelected == 20) {
             message = totalSelected + " " + PRICE_20;
@@ -366,11 +379,13 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             extraPhotos = totalSelected - 20;
             amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
             amount = amount + AMOUNT_TWENTY;
+            pack = 3;
             message = totalSelected + " " + "Pack de 20 + " + extraPhotos + " fotos extra = " + amount;
         }
 
         if (totalSelected <= 4) {
             message = String.valueOf(totalSelected);
+            pack = 0;
         }
 
 
