@@ -107,9 +107,10 @@ public class ViewImageExtended extends AppCompatDialogFragment {
 
     private void isSelected() {
         if (listImages.get(position).isSelected()) {
-            imageSelection.setColorFilter(ContextCompat.getColor(context, R.color.hyshPink));
+            imageSelection.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_star_pink_24dp));
+
         } else {
-            imageSelection.setColorFilter(ContextCompat.getColor(context, R.color.colorBlack));
+            imageSelection.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_star_black_24dp));
         }
     }
 

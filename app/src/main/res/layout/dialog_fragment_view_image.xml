@@ -21,8 +21,7 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="30dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_star_black_24dp"
-        android:tint="@android:color/holo_red_dark" />
+        android:src="@drawable/ic_star_black_24dp" />
 
     <RelativeLayout
         android:id="@+id/relative_next"
