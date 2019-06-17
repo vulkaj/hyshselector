@@ -15,6 +15,10 @@ public class Constants {
     public static String PRICE_10 = "Pack de 10 = 90 €";
     public static String PRICE_20 = "Pack de 20 = 150 €";
 
+    public static String PACK_5 = " = Pack de 5 + ";
+    public static String PACK_10 = " = Pack de 10 + ";
+    public static String PACK_20 = " = Pack de 20 + ";
+
     public static int AMOUNT_FIVE = 60;
     public static int AMOUNT_TEN = 90;
     public static int AMOUNT_TWENTY = 150;

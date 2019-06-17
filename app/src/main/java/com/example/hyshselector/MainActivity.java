@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.hyshselector.adapters.AdapterPhotos;
 import com.example.hyshselector.entities.PhotoHysh;
 import com.example.hyshselector.fragments.ViewImageExtended;
+import com.example.hyshselector.utils.AlertsHysh;
 import com.example.hyshselector.utils.Constants;
 
 import java.io.File;
@@ -43,6 +44,9 @@ import static com.example.hyshselector.utils.Constants.AMOUNT_TEN;
 import static com.example.hyshselector.utils.Constants.AMOUNT_TWENTY;
 import static com.example.hyshselector.utils.Constants.BASE_DIRECTORY;
 import static com.example.hyshselector.utils.Constants.LIST_IMAGES;
+import static com.example.hyshselector.utils.Constants.PACK_10;
+import static com.example.hyshselector.utils.Constants.PACK_20;
+import static com.example.hyshselector.utils.Constants.PACK_5;
 import static com.example.hyshselector.utils.Constants.POSITION;
 import static com.example.hyshselector.utils.Constants.PRICE_10;
 import static com.example.hyshselector.utils.Constants.PRICE_20;
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     private String sessionName;
     private String path;
     private int pack;
+    private AlertsHysh alertsHysh;
 
 
     @Override
@@ -169,34 +174,21 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
     private void finishSelection() {
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                context);
+        alertsHysh = new AlertsHysh(context, getString(R.string.finish_selection), getString(R.string.r_u_sure), new AlertsHysh.SettingInterface() {
+            @Override
+            public void dothings() {
+                copyRawFilesToDirectory();
+                Intent intent = new Intent(context, ResumeOfSelection.class);
+                intent.putExtra(SESSION_NAME, sessionName);
+                intent.putExtra("total_selected", totalSelected);
+                intent.putExtra("amount", amount);
+                intent.putExtra("pack", pack);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
 
-        alertDialogBuilder.setTitle(getString(R.string.finish_selection));
-
-        alertDialogBuilder
-                .setMessage(getString(R.string.r_u_sure))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        copyRawFilesToDirectory();
-                        Intent intent = new Intent(context, ResumeOfSelection.class);
-                        intent.putExtra(SESSION_NAME, sessionName);
-                        intent.putExtra("total_selected", totalSelected);
-                        intent.putExtra("amount", amount);
-                        intent.putExtra("pack", pack);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+       
     }
 
     private void copyRawFilesToDirectory() {
@@ -240,15 +232,12 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
                         }
 
-
                     }
 
                 }
 
-
             }
         }
-
 
     }
 
@@ -366,21 +355,32 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
             amount = amount + AMOUNT_FIVE; //TODO make Constants with the price of each session
             pack = 1;
-            message = totalSelected + " " + PRICE_5;
+
+            if (extraPhotos > 0) {
+                message = totalSelected + PACK_5 + extraPhotos + " fotos extra = " + amount + " € ";
+            } else {
+                message = totalSelected + " " + PRICE_5;
+            }
         } else if (totalSelected >= 10 && totalSelected <= 19) {
             extraPhotos = totalSelected - 10;
             amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
             amount = amount + AMOUNT_TEN;
             pack = 2;
-            message = totalSelected + " " + PRICE_10;
+
+            if (extraPhotos > 0) {
+                message = totalSelected + PACK_10 + extraPhotos + " fotos extra = " + amount + " € ";
+            } else {
+                message = totalSelected + " " + PRICE_10;
+            }
         } else if (totalSelected == 20) {
             message = totalSelected + " " + PRICE_20;
+            pack = 3;
         } else {
             extraPhotos = totalSelected - 20;
             amount = extraPhotos * AMOUNT_EXTRA_PHOTO;
             amount = amount + AMOUNT_TWENTY;
             pack = 3;
-            message = totalSelected + " " + "Pack de 20 + " + extraPhotos + " fotos extra = " + amount;
+            message = totalSelected + PACK_20 + extraPhotos + " fotos extra = " + amount;
         }
 
         if (totalSelected <= 4) {
