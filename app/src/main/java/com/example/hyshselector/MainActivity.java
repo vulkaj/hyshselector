@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             }
         });
 
-       
+
     }
 
     private void copyRawFilesToDirectory() {
@@ -407,5 +407,18 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         adapterPhotos.notifyDataSetChanged();
 
         updatingTotal();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        new AlertsHysh(context, "¿Volver?", "Perderás toda la selección si vuelves atrás. ¿Volver de todos modos?", new AlertsHysh.SettingInterface() {
+            @Override
+            public void dothings() {
+                Intent intent = new Intent(context,SessionSelector.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
     }
 }
